@@ -1,10 +1,10 @@
-import React from 'react';
-import './App.css';
-import HorizontalBarChart from './components/BarChart/HorizontalBarChart';
-import VerticalBarChart from './components/BarChart/VerticalBarChart';
+import React from "react";
+import "./App.css";
+import HorizontalBarChart from "./components/BarChart/HorizontalBarChart";
+import VerticalBarChart from "./components/BarChart/VerticalBarChart";
+import Circle from "./components/Circle/Circle";
 
 function App() {
-
   const data = [
     { name: "A", value: 49 },
     { name: "B", value: 104 },
@@ -17,20 +17,24 @@ function App() {
     { name: "I", value: 513 },
     { name: "K", value: 642 },
     { name: "M", value: 334 }
-  ]
+  ];
 
+  const dataCircle = [10, 20, 30];
   return (
     <div className="App">
       <div className="container">
         <div className="row mt-5">
           <div className="col-sm-6">
-            <HorizontalBarChart data={[49, 104, 159, 323, 513, 256, 173, 345, 513, 642, 334]} />
+            <HorizontalBarChart data={data} />
           </div>
 
           <div className="col-sm-6">
             <VerticalBarChart data={data} />
           </div>
         </div>
+      </div>
+      <div className="row mt-5">
+        <Circle data={dataCircle} />
       </div>
     </div>
   );
