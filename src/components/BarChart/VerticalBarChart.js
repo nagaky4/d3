@@ -38,6 +38,17 @@ class VerticalBarChart extends Component {
 
     const xAxis = d3.axisBottom().scale(x);
     const yAxis = d3.axisLeft().scale(y);
+    var defaultColor;
+
+    const colors = d3
+      .scaleLinear()
+      .domain([
+        0,
+        this.props.data.length * 0.33,
+        this.props.data.length * 0.66,
+        this.props.data.length
+      ])
+      .range(["#d6e9c6", "#bce8f1", "#faebcc", "#ebccd1"]);
 
     const chart = d3
       .select(this.refs.chart)
@@ -60,17 +71,44 @@ class VerticalBarChart extends Component {
 
     barChart
       .append("rect")
-      .attr("y", d => y(d.value))
+      .attr("y", chartHeight)
       .attr("x", widthAxis)
       .attr("width", barWidth - 5)
+      .attr("height", 0)
+      .style("fill", (d, i) => colors(i))
+      .on("mouseover", function(d) {
+        defaultColor = this.style.fill;
+        d3.select(this).style("fill", "#3c763d");
+      })
+      .on("click", function(d, i) {
+        d3.select(this).style("fill", "red");
+        return i;
+      })
+      .on("mouseout", function(d, i) {
+        d3.select(this).style("fill", defaultColor);
+      })
+      .transition()
+      .attr("y", d => {
+        return y(d.value);
+      })
       .attr("height", d => chartHeight - y(d.value))
-      .style("background", "blue");
+      .delay((d, i) => i * 30)
+      .duration(2000)
+      .ease(d3.easeElastic);
 
     barChart
       .append("text")
-      .attr("y", d => y(d.value) + 10)
+      .attr("y", 0)
       .attr("x", widthAxis + (barWidth + 10) / 2)
-      .text(d => d.value);
+      .text(d => d.value)
+      .transition()
+      .attr("y", d => y(d.value) + 10)
+      .delay((d, i) => i * 30)
+      .duration(2000)
+      .transition()
+      .attrTween("fill", function(d) {
+        d3.select(this).style("fill", "black");
+      });
 
     chart
       .append("g")

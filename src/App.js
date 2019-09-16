@@ -3,6 +3,7 @@ import "./App.css";
 import HorizontalBarChart from "./components/BarChart/HorizontalBarChart";
 import VerticalBarChart from "./components/BarChart/VerticalBarChart";
 import Circle from "./components/Circle/Circle";
+import LineChart from "./components/Line/LineChart";
 
 function App() {
   const data = [
@@ -34,7 +35,12 @@ function App() {
         </div>
       </div>
       <div className="row mt-5">
-        <Circle data={dataCircle} />
+        <div className="col-sm-6">
+          <Circle data={dataCircle} />
+        </div>
+        <div className="col-sm-6">
+          <LineChart data={data} />
+        </div>
       </div>
     </div>
   );
