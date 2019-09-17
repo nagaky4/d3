@@ -3,6 +3,13 @@ import React, { Component } from "react";
 import * as d3 from "d3";
 import "./LineChart.css";
 
+const MARGIN = {
+  Top: 30,
+  Left: 30,
+  Right: 30,
+  Bottom: 30
+};
+
 class LineChart extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +27,7 @@ class LineChart extends Component {
     const data = this.props.data,
       w = 700,
       h = 500,
+      barWidth = w / data.length,
       max = d3.max(data.map(item => item.value));
 
     const x = d3
@@ -57,12 +65,38 @@ class LineChart extends Component {
       stateBegin = { ...teA };
       tempArr.push(teA);
     });
-    console.log("tempArr", tempArr);
+
     const lineChart = d3
       .select(this.refs.lineChart)
-      .attr("width", w)
-      .attr("height", h)
-      .style("background-color", "black");
+      .attr("width", w + MARGIN.Right + MARGIN.Left)
+      .attr("height", h + MARGIN.Top + MARGIN.Bottom)
+      .style("background-color", "#a0a0a7");
+
+    const barChart = lineChart
+      .selectAll("g")
+      .data(data)
+      .enter()
+      .append("g");
+
+    barChart
+      .append("rect")
+      .attr(
+        "transform",
+        (d, i) =>
+          `translate(${i * barWidth + MARGIN.Left},${h -
+            y(d.value) +
+            MARGIN.Top})`
+      )
+      .attr("width", x(1) - 10)
+      .attr("height", d => y(d.value))
+      .attr("fill", "blue")
+      .attr("opacity", "0.5");
+    barChart
+      .append("text")
+      .attr("x", (d, i) => x(i) + MARGIN.Left)
+      .attr("y", d => h - y(d.value) + MARGIN.Top)
+
+      .text(d => d.value);
 
     lineChart
       .selectAll("line")
@@ -71,19 +105,34 @@ class LineChart extends Component {
       .append("line")
       .style("stroke", "red")
       .style("stroke-width", "3px")
-      .attr("x1", (d, i) => {
-        return d.x1;
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", 0)
+      .transition()
+      .delay((d, i) => i * 500)
+      .attrTween("x1", function(d, i) {
+        if (i !== 0) {
+          d3.select(this).attr("x1", d.x1 + MARGIN.Left);
+        }
       })
-      .attr("y1", (d, i) => {
-        return h - d.y1;
+      .attrTween("y1", function(d, i) {
+        if (i !== 0) {
+          d3.select(this).attr("y1", h - d.y1 + MARGIN.Top);
+        }
       })
-      .attr("x2", (d, i) => {
-        return d.x2;
+      .attrTween("x2", function(d, i) {
+        if (i !== 0) {
+          d3.select(this).attr("x2", d.x2 + MARGIN.Left);
+        }
       })
-      .attr("y2", (d, i) => {
-        return h - d.y2;
+      .attrTween("y2", function(d, i) {
+        if (i !== 0) {
+          d3.select(this).attr("y2", h - d.y2 + MARGIN.Top);
+        }
       })
-      .text(d => d.value);
+      .duration(2000)
+      .ease(d3.easeCubic);
   }
   render() {
     return <svg ref="lineChart"></svg>;

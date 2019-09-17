@@ -20,7 +20,6 @@ function App() {
     { name: "M", value: 334 }
   ];
 
-  const dataCircle = [10, 20, 30];
   return (
     <div className="App">
       <div className="container">
@@ -36,12 +35,12 @@ function App() {
       </div>
       <div className="row mt-5">
         <div className="col-sm-6">
-          <Circle data={dataCircle} />
         </div>
         <div className="col-sm-6">
           <LineChart data={data} />
         </div>
       </div>
+      <div className="row mt-5"></div>
     </div>
   );
 }
